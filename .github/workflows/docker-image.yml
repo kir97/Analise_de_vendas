@@ -19,13 +19,12 @@ jobs:
 
     - name: Docker Login
       uses: docker/login-action@v3.3.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_PWD }}
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_PWD }}
     
     - name: build Docker
       uses: docker/build-push-action@v6.12.0
-      
       with:
         context: ./Analise_vendas
         file: ./Analise_vendas/DockerFile
