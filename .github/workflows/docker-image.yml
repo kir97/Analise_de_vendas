@@ -37,4 +37,3 @@ jobs:
         push: true
         tags: |
           kir97/analise-vendas
-          kir/analise-vendas:latest
