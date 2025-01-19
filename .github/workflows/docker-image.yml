@@ -37,3 +37,16 @@ jobs:
         push: true
         tags: |
           kir97/analise-vendas
+
+
+  #CD:
+  #  runs-on: ubuntu-latest
+  #  needs: [CI]
+  #  steps:
+  #  - uses: actions/checkout@v4.2.2
+
+  #  - name: K8s set context action
+  #    uses: ossrs/k8s-set-context-action@v1
+  #    with:
+  #        method: kubeconfig
+  #        kubeconfig: ${{ secrets.K8S_CONFIG }}
