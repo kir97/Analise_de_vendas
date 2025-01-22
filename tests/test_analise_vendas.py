@@ -1,18 +1,18 @@
 import unittest
 import sqlite3
 import pandas as pd
-from scripts.analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
+from scripts.analise_vendas import carregar_dados_do_banco, calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
 
 class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.conn = sqlite3.connect(":memory:")  # Banco de dados em memória
+        cls.conn = sqlite3.connect(":memory:")
         cursor = cls.conn.cursor()
         cursor.execute('''
         CREATE TABLE registro_vendas (
             "ID da Venda" INTEGER PRIMARY KEY,
-            "Data da Venda" NUM,
+            "Data da Venda" TEXT,
             Produto TEXT,
             "Quantidade Vendida" INTEGER,
             "Preço Unitário" REAL,
@@ -20,7 +20,7 @@ class TestAnaliseVendas(unittest.TestCase):
             "Desconto Aplicado" REAL,
             Categoria TEXT,
             Regiao TEXT,
-            "Data de Entrega" NUM,
+            "Data de Entrega" TEXT,
             Vendedor TEXT,
             "Status de Pagamento" TEXT,
             "Método de Pagamento" TEXT
@@ -30,10 +30,14 @@ class TestAnaliseVendas(unittest.TestCase):
         INSERT INTO registro_vendas ("Data da Venda", Produto, "Quantidade Vendida", "Preço Unitário", "Custo Unitário", "Desconto Aplicado", Categoria, Regiao, "Data de Entrega", Vendedor, "Status de Pagamento", "Método de Pagamento")
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', [
-            (1682966400, 'Produto A', 10, 100.0, 60.0, 10.0, 'Categoria 1', 'Norte', 1683072000, 'Vendedor 1', 'Pago', 'Cartão'),
-            (1682966400, 'Produto B', 5, 200.0, 120.0, 20.0, 'Categoria 2', 'Sul', 1683072000, 'Vendedor 2', 'Pendente', 'Boleto'),
-            (1683052800, 'Produto A', 7, 100.0, 60.0, 5.0, 'Categoria 1', 'Centro-Oeste', 1683158400, 'Vendedor 1', 'Pago', 'Cartão'),
-            (1683052800, 'Produto B', 3, 200.0, 120.0, 10.0, 'Categoria 2', 'Nordeste', 1683158400, 'Vendedor 2', 'Pendente', 'Boleto'),
+            ('2025-01-01', 'Camiseta Esportiva', 10, 50, 30, 5, 'Esporte', 'Norte', '2025-01-03', 'João', 'Pago', 'Cartão de Crédito'),
+            ('2025-01-02', 'Tênis Corrida', 5, 300, 180, 10, 'Esporte', 'Sul', '2025-01-05', 'Maria', 'Pendente', 'Boleto Bancário'),
+            ('2025-01-03', 'Mochila Viagem', 3, 150, 90, 0, 'Viagem', 'Sudeste', '2025-01-07', 'Pedro', 'Pago', 'Cartão de Crédito'),
+            ('2025-01-04', 'Tênis Corrida', 8, 300, 180, 15, 'Esporte', 'Norte', '2025-01-07', 'João', 'Pago', 'Cartão de Crédito'),
+            ('2025-02-01', 'Camiseta Esportiva', 15, 50, 30, 10, 'Esporte', 'Nordeste', '2025-02-03', 'Maria', 'Pendente', 'Boleto Bancário'),
+            ('2025-02-02', 'Mochila Viagem', 7, 150, 90, 5, 'Viagem', 'Sul', '2025-02-05', 'Pedro', 'Pago', 'Cartão de Crédito'),
+            ('2025-02-03', 'Tênis Corrida', 6, 300, 180, 20, 'Esporte', 'Sudeste', '2025-02-06', 'João', 'Pago', 'Cartão de Crédito'),
+            ('2025-02-04', 'Camiseta Casual', 12, 40, 25, 0, 'Casual', 'Norte', '2025-02-06', 'Maria', 'Pago', 'Cartão de Crédito'),
         ])
         cls.conn.commit()
 
@@ -44,29 +48,28 @@ class TestAnaliseVendas(unittest.TestCase):
     def test_calcular_faturamento(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         faturamento_total = calcular_faturamento(df)
-        faturamento_esperado = (10 * 100.0 - 10.0) + (5 * 200.0 - 20.0) + (7 * 100.0 - 5.0) + (3 * 200.0 - 10.0)
+        faturamento_esperado = (10 * 50 - 5) + (5 * 300 - 10) + (3 * 150 - 0) + (8 * 300 - 15)
         self.assertEqual(faturamento_total, faturamento_esperado)
 
     def test_produto_mais_vendido(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         produto, quantidade = produto_mais_vendido(df)
-        self.assertEqual(produto, 'Produto A')
-        self.assertEqual(quantidade, 17)
+        self.assertEqual(produto, 'Tênis Corrida')
+        self.assertEqual(quantidade, 14)
 
     def test_calcular_vendas_mensais(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         vendas_mensais = calcular_vendas_mensais(df)
-        
-        # Ajuste da data para 2025-01 com base nas datas inseridas (em timestamp)
-        # Como o timestamp usado no banco é de 2023, as datas não vão bater diretamente em 2025.
-        # Portanto, ajustamos a expectativa com base nas datas já configuradas.
-        
-        faturamento_esperado_janeiro = (10 * 100.0 - 10.0) + (5 * 200.0 - 20.0) + (7 * 100.0 - 5.0) + (3 * 200.0 - 10.0)
-        
-        # A chave para o mês de janeiro de 2025 deve ser `'2025-01'`, mas como a data inserida não corresponde diretamente a 2025,
-        # você deve verificar qual período a data cai. Aqui, assumimos que as datas são ajustadas para o período correto.
-        self.assertTrue('2025-01' in vendas_mensais.index.astype(str))  # Verificando se '2025-01' existe no índice
-        self.assertEqual(vendas_mensais['2025-01'].sum(), faturamento_esperado_janeiro)
+
+        # Convertendo o índice para string para garantir que '2025-01' esteja no formato correto
+        vendas_mensais.index = vendas_mensais.index.astype(str)
+
+        # Verifique se o mês de janeiro de 2025 está presente no índice
+        self.assertTrue('2025-01' in vendas_mensais.index, "Mês de janeiro de 2025 não encontrado")
+
+        # Calcule o faturamento esperado para janeiro de 2025
+        faturamento_esperado_janeiro = (10 * 50 - 5) + (5 * 300 - 10) + (3 * 150 - 0) + (8 * 300 - 15)
+        self.assertEqual(vendas_mensais['2025-01'], faturamento_esperado_janeiro)
 
 if __name__ == '__main__':
     unittest.main()
