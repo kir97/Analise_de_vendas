@@ -7,7 +7,6 @@ class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Cria uma conexão de banco de dados em memória e tabela de exemplo
         cls.conn = sqlite3.connect(":memory:")
         cursor = cls.conn.cursor()
         cursor.execute('''
@@ -40,30 +39,25 @@ class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # Fechar a conexão com o banco de dados após os testes
         cls.conn.close()
 
     def test_calcular_faturamento(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         faturamento_total = calcular_faturamento(df)
-        # O faturamento total é calculado levando em consideração o desconto aplicado
         faturamento_esperado = (10 * 100.0 - 10.0) + (5 * 200.0 - 20.0) + (7 * 100.0 - 5.0) + (3 * 200.0 - 10.0)
         self.assertEqual(faturamento_total, faturamento_esperado)
 
     def test_produto_mais_vendido(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         produto, quantidade = produto_mais_vendido(df)
-        # Produto A é o mais vendido com 17 unidades
         self.assertEqual(produto, 'Produto A')
         self.assertEqual(quantidade, 17)
 
     def test_calcular_vendas_mensais(self):
         df = pd.read_sql_query("SELECT * FROM registro_vendas;", self.conn)
         vendas_mensais = calcular_vendas_mensais(df)
-        # O faturamento mensal para janeiro de 2024
         faturamento_esperado_janeiro = (10 * 100.0 - 10.0) + (5 * 200.0 - 20.0) + (7 * 100.0 - 5.0) + (3 * 200.0 - 10.0)
-        # A data foi inserida como timestamps, por isso ajusta a comparação para "2024-01"
-        self.assertEqual(vendas_mensais['2024-01'].sum(), faturamento_esperado_janeiro)
+        self.assertEqual(vendas_mensais['2025-01'].sum(), faturamento_esperado_janeiro)
 
 if __name__ == '__main__':
     unittest.main()
