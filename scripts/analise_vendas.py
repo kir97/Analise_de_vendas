@@ -22,7 +22,7 @@ def produto_mais_vendido(df):
 
 def calcular_vendas_mensais(df):
     # Calcular as vendas mensais
-    df["Data da Venda"] = pd.to_datetime(df["Data da Venda"], unit='s')  # Supondo que a data esteja em formato numérico (timestamp)
+    df["Data da Venda"] = pd.to_datetime(df["Data da Venda"])  # Remover o 'unit=s'
     df["Mês"] = df["Data da Venda"].dt.to_period("M")  # Convertendo para período mensal
     df["Faturamento"] = (df["Quantidade Vendida"] * df["Preço Unitário"]) - df["Desconto Aplicado"]
     
