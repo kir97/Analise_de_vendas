@@ -8,8 +8,6 @@ import os
 # Adiciona o diretório raiz ao sys.path para que o pytest consiga encontrar o módulo
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
 
-from analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
-
 class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
