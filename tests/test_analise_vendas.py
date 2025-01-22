@@ -37,7 +37,7 @@ class TestAnaliseVendas(unittest.TestCase):
         ''')
         
         # Insere dados de exemplo na tabela
-        cursor.executemany('''
+        cursor.executemany(''' 
         INSERT INTO registro_vendas ("Data da Venda", Produto, "Quantidade Vendida", "Preço Unitário", "Custo Unitário", "Desconto Aplicado", Categoria, Regiao, "Data de Entrega", Vendedor, "Status de Pagamento", "Método de Pagamento")
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', [
