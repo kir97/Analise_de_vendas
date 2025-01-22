@@ -1,7 +1,7 @@
 import pytest
 import sqlite3
 import pandas as pd
-from scripts.dashboard import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
+from scripts.analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
 
 @pytest.fixture
 def setup_db():
