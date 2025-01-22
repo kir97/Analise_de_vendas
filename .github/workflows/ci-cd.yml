@@ -24,6 +24,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Run tests with pytest
+        run: |
+          pytest
       
       - name: Test Script
         run: python -m unittest discover tests
