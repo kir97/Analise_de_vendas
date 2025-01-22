@@ -23,10 +23,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-
       
       - name: Test Script
-        run: python -m unittest discover ./scripts/dashboard.py
+        run: python -m unittest discover tests
 
   docker-build:
     runs-on: ubuntu-latest
