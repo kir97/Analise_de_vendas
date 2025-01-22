@@ -1,7 +1,13 @@
 import pytest
 import sqlite3
 import pandas as pd
-from scripts.analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
+import sys
+import os
+
+# Adicionando o diretório scripts ao path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
+
+from analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
 
 @pytest.fixture
 def setup_db():
