@@ -1,15 +1,24 @@
 import unittest
 import sqlite3
 import pandas as pd
-from scripts.analise_vendas import carregar_dados_do_banco, calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
+import sys
+import os
+
+# Adiciona o diretório 'scripts' ao caminho de importação
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
+
+from analise_vendas import carregar_dados_do_banco, calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
 
 class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        # Cria o banco de dados em memória
         cls.conn = sqlite3.connect(":memory:")
         cursor = cls.conn.cursor()
-        cursor.execute('''
+        
+        # Criação da tabela no banco de dados em memória
+        cursor.execute(''' 
         CREATE TABLE registro_vendas (
             "ID da Venda" INTEGER PRIMARY KEY,
             "Data da Venda" TEXT,
@@ -26,6 +35,8 @@ class TestAnaliseVendas(unittest.TestCase):
             "Método de Pagamento" TEXT
         )
         ''')
+
+        # Insere dados de exemplo na tabela
         cursor.executemany('''
         INSERT INTO registro_vendas ("Data da Venda", Produto, "Quantidade Vendida", "Preço Unitário", "Custo Unitário", "Desconto Aplicado", Categoria, Regiao, "Data de Entrega", Vendedor, "Status de Pagamento", "Método de Pagamento")
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -43,6 +54,7 @@ class TestAnaliseVendas(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        # Fecha a conexão com o banco de dados
         cls.conn.close()
 
     def test_calcular_faturamento(self):
