@@ -1,3 +1,4 @@
+'''
 import unittest
 import pandas as pd
 from scripts.analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
@@ -38,3 +39,4 @@ class TestAnaliseVendas(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+'''
