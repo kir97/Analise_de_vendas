@@ -1,0 +1,41 @@
+name: CI/CD for Dashboard
+
+on:
+  push:
+    branches:
+      [ '*' ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      
+      - name: Test Script
+        run: python -m unittest discover tests
+
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      
+      - name: Build Docker Image
+        run: docker build -t dashboard-app .
