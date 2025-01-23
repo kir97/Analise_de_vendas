@@ -1,42 +1,44 @@
-'''
 import unittest
 import pandas as pd
-from scripts.analise_vendas import calcular_faturamento, produto_mais_vendido, calcular_vendas_mensais
-import sqlite3
-import sys
-import os
-
-# Adiciona o diretório raiz ao sys.path para que o pytest consiga encontrar o módulo
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
+from scripts.analise_vendas import (
+    carregar_dados_do_banco,
+    calcular_faturamento,
+    produto_mais_vendido,
+    calcular_vendas_mensais,
+)
 
 class TestAnaliseVendas(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        # Conectar ao banco de dados SQLite
-        cls.conn = sqlite3.connect("./data/dataset_vendas_ficticias.db")  # Ajuste o caminho conforme necessário
-        cls.df = pd.read_sql_query("SELECT * FROM registro_vendas;", cls.conn)
+    def setUp(self):
+        # Dados fictícios para os testes
+        data = {
+            "Produto": ["Produto A", "Produto B", "Produto A", "Produto C"],
+            "Quantidade Vendida": [10, 5, 15, 8],
+            "Preço Unitário": [20.0, 30.0, 20.0, 50.0],
+            "Desconto Aplicado": [10.0, 5.0, 20.0, 10.0],
+            "Data da Venda": ["2025-01-01", "2025-01-02", "2025-01-15", "2025-02-01"],
+        }
+        self.df = pd.DataFrame(data)
 
     def test_calcular_faturamento(self):
+        # Teste do cálculo de faturamento
         faturamento_total = calcular_faturamento(self.df)
-        faturamento_esperado = (10 * 50 - 5) + (5 * 300 - 10) + (3 * 150 - 0) + (8 * 300 - 15)
-        self.assertEqual(faturamento_total, faturamento_esperado)
-
-    def test_calcular_vendas_mensais(self):
-        vendas_mensais = calcular_vendas_mensais(self.df)
-        # Esperado será baseado nos dados que você tem no banco de dados
-        vendas_esperadas = pd.Series([5000, 4500, 7000], index=pd.to_datetime(['2025-01', '2025-02', '2025-03']).to_period('M'))
-        pd.testing.assert_series_equal(vendas_mensais, vendas_esperadas)
+        self.assertAlmostEqual(faturamento_total, 1205.0, places=2)
 
     def test_produto_mais_vendido(self):
+        # Teste do produto mais vendido
         produto, quantidade = produto_mais_vendido(self.df)
-        self.assertEqual(produto, 'Tênis Corrida')  # Ajuste conforme os dados esperados no banco
-        self.assertEqual(quantidade, 100)  # Ajuste conforme a quantidade do produto mais vendido
+        self.assertEqual(produto, "Produto A")
+        self.assertEqual(quantidade, 25)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.conn.close()
+    def test_calcular_vendas_mensais(self):
+        # Teste do cálculo de vendas mensais
+        vendas_mensais = calcular_vendas_mensais(self.df)
+        faturamento_jan = vendas_mensais["2025-01"]
+        faturamento_fev = vendas_mensais["2025-02"]
+
+        self.assertAlmostEqual(faturamento_jan, 715.0, places=2)
+        self.assertAlmostEqual(faturamento_fev, 490.0, places=2)
 
 if __name__ == "__main__":
     unittest.main()
-'''
