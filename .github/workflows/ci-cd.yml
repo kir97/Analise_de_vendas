@@ -38,8 +38,6 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    env:
-        DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
     steps:
       - name: Install Flyctl CLI
         run: |
