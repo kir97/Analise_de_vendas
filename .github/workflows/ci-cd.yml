@@ -40,24 +40,29 @@ jobs:
     needs: [CI]
 
     steps:
-      - name: Install Flyctl CLI
-        run: |
-          curl -L https://fly.io/install.sh | sh
-          echo "$HOME/.fly/bin" >> $GITHUB_PATH
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+#      - name: Install Flyctl CLI
+#        run: |
+#          curl -L https://fly.io/install.sh | sh
+#          echo "$HOME/.fly/bin" >> $GITHUB_PATH
 
-      - name: Check Flyctl version
-        run: |
-          flyctl version  # Verifica a versão do Flyctl para depuração
+#      - name: Check Flyctl version
+#        run: |
+#          flyctl version  # Verifica a versão do Flyctl para depuração
 
-      - name: Debug Fly API Token
-        run: |
-          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  # Exibe se o token está configurado
+#      - name: Debug Fly API Token
+#        run: |
+#          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  # Exibe se o token está configurado
 
-      - name: Authenticate with Fly.io
-        run: |
-          echo "Authenticating with Fly.io..."
-          flyctl auth token ${{ secrets.DEPLOY_TOKEN }}  # Passando o token diretamente
+#      - name: Authenticate with Fly.io
+#        run: |
+#          echo "Authenticating with Fly.io..."
+#          flyctl auth token ${{ secrets.DEPLOY_TOKEN }}  # Passando o token diretamente
 
-      - name: Deploy to Fly.io
-        run: |
-          flyctl deploy --remote-only
+#      - name: Deploy to Fly.io
+#        run: |
+#          flyctl deploy --remote-only
