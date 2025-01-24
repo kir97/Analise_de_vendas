@@ -16,9 +16,11 @@ class TestAnaliseVendas(unittest.TestCase):
             "Quantidade Vendida": [10, 5, 15, 8],
             "Preço Unitário": [20.0, 30.0, 20.0, 50.0],
             "Desconto Aplicado": [10.0, 5.0, 20.0, 10.0],
+            "Custo Unitário": [15.0, 25.0, 18.0, 40.0],  # Adicionando custo unitário
             "Data da Venda": ["2025-01-01", "2025-01-02", "2025-01-15", "2025-02-01"],
         }
         self.df = pd.DataFrame(data)
+        self.df["Margem de Lucro"] = (self.df["Preço Unitário"] - self.df["Custo Unitário"]) * self.df["Quantidade Vendida"]
 
     def test_calcular_faturamento(self):
         # Teste do cálculo de faturamento
@@ -39,6 +41,11 @@ class TestAnaliseVendas(unittest.TestCase):
 
         self.assertAlmostEqual(faturamento_jan, 715.0, places=2)
         self.assertAlmostEqual(faturamento_fev, 490.0, places=2)
+
+    def test_margem_lucro(self):
+        # Teste de cálculo de margem de lucro
+        margem_lucro_total = self.df["Margem de Lucro"].sum()
+        self.assertAlmostEqual(margem_lucro_total, 235.0, places=2)  # Valor esperado baseado nos dados fictícios
 
 if __name__ == "__main__":
     unittest.main()
