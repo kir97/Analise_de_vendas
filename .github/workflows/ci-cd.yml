@@ -41,11 +41,10 @@ jobs:
     - name: Install Flyctl
       run: |
         curl -L https://fly.io/install.sh | sh
-        export PATH="$HOME/.fly/bin:$PATH"  # Mova o export para cá para garantir que ele seja configurado corretamente.
+        echo "export PATH=$HOME/.fly/bin:$PATH" >> $GITHUB_ENV
+        source $GITHUB_ENV
+        flyctl version
     
-    - name: comands flyclt action
-      uses: superfly/flyctl-actions@1.5
-      
     - name: Deploy to Fly.io
       run: |
         flyctl auth token "${{ secrets.FLY_API_TOKEN }}"
