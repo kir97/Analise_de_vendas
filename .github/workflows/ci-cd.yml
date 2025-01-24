@@ -41,16 +41,13 @@ jobs:
     - name: Install Flyctl CLI
       run: |
         curl -L https://fly.io/install.sh | sh
-        echo "$HOME/.fly/bin" >> $GITHUB_PATH 
+        echo "$HOME/.fly/bin" >> $GITHUB_PATH
 
-    - name: Verify Flyctl installation
-      run: |
-        flyctl version  
+    - name: Check Flyctl version
+      run: flyctl version
 
     - name: Authenticate with Fly.io
       run: |
-        flyctl auth login "${{ secrets.FLY_API_USER }}"
-        flyctl auth pass "${{ secrets.FLY_API_PWD }}"
         flyctl auth token "${{ secrets.FLY_API_TOKEN }}"
 
     - name: Deploy to Fly.io
