@@ -38,14 +38,15 @@ jobs:
     needs: [CI]
 
     steps:
-    - name: Install Flyctl
+    - name: Install Flyctl CLI
       run: |
         curl -L https://fly.io/install.sh | sh
-        echo "export PATH=$HOME/.fly/bin:$PATH" >> $GITHUB_ENV
-        source $GITHUB_ENV
-        flyctl version
-    
-    - name: Deploy to Fly.io
+        export PATH="$HOME/.fly/bin:$PATH"
+
+    - name: Authenticate with Fly.io
       run: |
         flyctl auth token "${{ secrets.FLY_API_TOKEN }}"
+
+    - name: Deploy to Fly.io
+      run: |
         flyctl deploy --remote-only
