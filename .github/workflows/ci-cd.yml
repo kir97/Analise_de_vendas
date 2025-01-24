@@ -52,7 +52,7 @@ jobs:
       - name: Authenticate with Fly.io
         run: |
           echo "Authenticating with Fly.io..."
-          flyctl auth token "${{ secrets.FLY_API_TOKEN }}"  # Usa o token do GitHub Secrets
+          flyctl auth token "${{ secrets.DEPLOY_TOKEN }}" 
           flyctl auth whoami  
 
       - name: Deploy to Fly.io
