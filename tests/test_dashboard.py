@@ -23,33 +23,38 @@ class TestDashboard(unittest.TestCase):
             "Status de Pagamento": ["Pago", "Pendente", "Pago", "Pago"],
         }
         self.df = pd.DataFrame(data)
+        self.df["Faturamento"] = self.df["Quantidade Vendida"] * self.df["Preço Unitário"]
+        self.df["Margem de Lucro"] = (self.df["Preço Unitário"] - self.df["Custo Unitário"]) * self.df["Quantidade Vendida"]
 
     def test_calcular_faturamento_total(self):
-        self.df["Faturamento"] = self.df["Quantidade Vendida"] * self.df["Preço Unitário"]
+        # Teste de faturamento total
         faturamento_total = self.df["Faturamento"].sum()
         self.assertAlmostEqual(faturamento_total, 1300.0, places=2)
 
     def test_calcular_margem_lucro(self):
-        self.df["Margem de Lucro"] = (self.df["Preço Unitário"] - self.df["Custo Unitário"]) * self.df["Quantidade Vendida"]
+        # Teste de margem de lucro
         margem_lucro_total = self.df["Margem de Lucro"].sum()
         self.assertAlmostEqual(margem_lucro_total, 550.0, places=2)
 
     def test_agrupamento_vendas_mensais(self):
+        # Agrupamento de vendas mensais
         self.df["Data da Venda"] = pd.to_datetime(self.df["Data da Venda"])
         self.df["Mês"] = self.df["Data da Venda"].dt.to_period("M")
         vendas_mensais = self.df.groupby("Mês")["Faturamento"].sum()
 
-        # Valores esperados
+        # Verificando os resultados esperados
         self.assertAlmostEqual(vendas_mensais["2025-01"], 715.0, places=2)
         self.assertAlmostEqual(vendas_mensais["2025-02"], 490.0, places=2)
 
     def test_filtro_categoria(self):
+        # Teste de filtro por categoria
         categoria = "Eletrônicos"
         df_filtrado = self.df[self.df["Categoria"] == categoria]
         self.assertEqual(len(df_filtrado), 2)
         self.assertTrue((df_filtrado["Categoria"] == "Eletrônicos").all())
 
     def test_filtro_produto(self):
+        # Teste de filtro por produto
         produto = "Produto A"
         df_filtrado = self.df[self.df["Produto"] == produto]
         self.assertEqual(len(df_filtrado), 2)
