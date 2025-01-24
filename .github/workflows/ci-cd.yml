@@ -3,7 +3,7 @@ name: Deploy to Fly.io
 on:
   push:
     branches:
-      - main  # Ou a branch desejada para deploy
+      - main
   pull_request:
     branches:
       - main
@@ -51,12 +51,11 @@ jobs:
 
       - name: Debug Fly API Token
         run: |
-          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  # Exibe se o token está configurado
+          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  
 
       - name: Authenticate with Fly.io
         run: |
-          echo "Authenticating with Fly.io..."
-          flyctl auth token ${{ secrets.DEPLOY_TOKEN }}  # Passando o token diretamente
+          flyctl auth token ${{ secrets.DEPLOY_TOKEN }} 
 
       - name: Deploy to Fly.io
         run: |
