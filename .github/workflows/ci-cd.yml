@@ -47,13 +47,16 @@ jobs:
 
       - name: Check Flyctl version
         run: |
-          flyctl version  
+          flyctl version  # Verifica a versão do Flyctl para depuração
+
+      - name: Debug Fly API Token
+        run: |
+          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  # Exibe se o token está configurado
 
       - name: Authenticate with Fly.io
         run: |
           echo "Authenticating with Fly.io..."
-          flyctl auth token "${{ secrets.DEPLOY_TOKEN }}" 
-          flyctl auth whoami  
+          flyctl auth token ${{ secrets.DEPLOY_TOKEN }}  # Passando o token diretamente
 
       - name: Deploy to Fly.io
         run: |
