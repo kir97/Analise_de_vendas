@@ -22,6 +22,11 @@ class TestAnaliseVendas(unittest.TestCase):
         self.df = pd.DataFrame(data)
         self.df["Margem de Lucro"] = (self.df["Preço Unitário"] - self.df["Custo Unitário"]) * self.df["Quantidade Vendida"]
 
+    def test_carregar_dados_do_banco(self):
+        # Teste da função de carregar dados do banco (com fallback para CSV)
+        df_banco = carregar_dados_do_banco()
+        self.assertIsNotNone(df_banco)  # Verifica se o dataframe não é nulo
+
     def test_calcular_faturamento(self):
         # Teste do cálculo de faturamento
         faturamento_total = calcular_faturamento(self.df)
