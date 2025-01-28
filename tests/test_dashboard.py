@@ -1,8 +1,10 @@
 import unittest
 import pandas as pd
-
 from scripts.dashboard import (
     df,  # DataFrame carregado no script
+    plot_faturamento_mensal,
+    plot_produtos_mais_vendidos,
+    plot_margem_lucro,
 )
 
 class TestDashboard(unittest.TestCase):
@@ -59,6 +61,27 @@ class TestDashboard(unittest.TestCase):
         df_filtrado = self.df[self.df["Produto"] == produto]
         self.assertEqual(len(df_filtrado), 2)
         self.assertTrue((df_filtrado["Produto"] == "Produto A").all())
+
+    def test_plot_faturamento_mensal(self):
+        # Teste do gráfico de faturamento mensal
+        try:
+            plot_faturamento_mensal()
+        except Exception as e:
+            self.fail(f"plot_faturamento_mensal falhou com erro: {e}")
+
+    def test_plot_produtos_mais_vendidos(self):
+        # Teste do gráfico de produtos mais vendidos
+        try:
+            plot_produtos_mais_vendidos()
+        except Exception as e:
+            self.fail(f"plot_produtos_mais_vendidos falhou com erro: {e}")
+
+    def test_plot_margem_lucro(self):
+        # Teste do gráfico de margem de lucro
+        try:
+            plot_margem_lucro()
+        except Exception as e:
+            self.fail(f"plot_margem_lucro falhou com erro: {e}")
 
 if __name__ == "__main__":
     unittest.main()
