@@ -134,6 +134,9 @@ def main():
         mime="text/csv"
     )
 
+    # Adicionar créditos ao final da barra lateral
+    st.sidebar.markdown("🚀 Desenvolvido por Lúcio Ferreira e William Santana")
+
 # Executa a aplicação
 if __name__ == "__main__":
     main()
