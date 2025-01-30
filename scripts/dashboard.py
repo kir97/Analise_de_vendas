@@ -135,7 +135,7 @@ def main():
     )
 
     # Adicionar créditos ao final da barra lateral
-    st.sidebar.markdown("🚀 Desenvolvido por Lúcio Ferreira e William Santana")
+    st.sidebar.markdown("🚀 Desenvolvido por Lúcio Ferreira e Willian Santana")
 
 # Executa a aplicação
 if __name__ == "__main__":
