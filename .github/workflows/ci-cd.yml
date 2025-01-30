@@ -52,29 +52,3 @@ jobs:
       - name: Deploy
         run: flyctl deploy
 
-
-
-
-#    steps:
-#      - uses: actions/checkout@v4.2.2
-
-#      - name: Install Flyctl CLI
-#        run: |
-#          curl -L https://fly.io/install.sh | sh
-#          echo "$HOME/.fly/bin" >> $GITHUB_PATH
-
-#      - name: Check Flyctl version
-#        run: |
-#          flyctl version  # Verifica a versão do Flyctl para depuração
-
-#      - name: Debug Fly API Token
-#        run: |
-#          echo "DEPLOY_TOKEN is set: ${{ secrets.DEPLOY_TOKEN }}"  
-
-#      - name: Authenticate with Fly.io
-#        run: |
-#          flyctl auth token ${{ secrets.DEPLOY_TOKEN }} 
-
-#      - name: Deploy to Fly.io
-#        run: |
-#          flyctl deploy --remote-only
